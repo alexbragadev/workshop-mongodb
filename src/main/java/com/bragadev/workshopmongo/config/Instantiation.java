@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.bragadev.workshopmongo.domain.Post;
 import com.bragadev.workshopmongo.domain.User;
+import com.bragadev.workshopmongo.dto.AuthorDTO;
 import com.bragadev.workshopmongo.repository.PostRepository;
 import com.bragadev.workshopmongo.repository.UserRepository;
 
@@ -34,13 +35,14 @@ public class Instantiation implements CommandLineRunner {
 		User maria = new User(null, "Maria Brown", "maria@gmail.com");
 		User alex = new User(null, "Alex Green", "alex@gmail.com");
 		User bob = new User(null, "Bob Grey", "bob@gmail.com");
+		userRepository.saveAll(Arrays.asList(maria, alex, bob));
 		
 		Post post1 = new Post(
 				null, 
 				sdf.parse("21/03/2024"), 
 				"Here we go!", 
 				"I'm going to Germany! Take care!",
-				maria
+				new AuthorDTO(maria)
 				);
 		
 		Post post2 = new Post(
@@ -48,11 +50,14 @@ public class Instantiation implements CommandLineRunner {
 				sdf.parse("13/11/2024"), 
 				"Where are you from?", 
 				"Can you answer me?",
-				maria
+				new AuthorDTO(maria)
 				);
 		
-		userRepository.saveAll(Arrays.asList(maria, alex, bob));
+
 		postRepository.saveAll(Arrays.asList(post1, post2));
+		
+		maria.getPosts().addAll(Arrays.asList(post1, post2));
+		userRepository.save(maria);
 	}
 
 }
